@@ -57,7 +57,7 @@ public class Cidade extends Localidade
     }
     
     /**
-     * Define se a Cidade Ž Sede de Distrito
+     * Define se a Cidade ï¿½ Sede de Distrito
      */
     public void setsedeDistrito(boolean sedeDistrito) {
         this.sedeDistrito=sedeDistrito;
@@ -65,28 +65,39 @@ public class Cidade extends Localidade
     
     
     /**
-     * Verifica se a Cidade Ž Sede de Distrito
+     * Verifica se a Cidade ï¿½ Sede de Distrito
      */
     public boolean getsedeDistrito() {
         return this.sedeDistrito;
     }
     
-    /**
-     * Devolve a Cidade sob a forma de String
-     */
-    public String toString() {
-        StringBuffer s = new StringBuffer();
-        s.append(super.toString());
-        s.append("Nome do Presidente:" + nomePresidente+"\n");
-        s.append("Universidade: " + universidade+"\n");
-        s.append("Sede do Distrito: " + sedeDistrito+"\n");
-        return s.toString();
-    }
+/**
+ * Returns the City as a String
+ *
+ * @return the City as a String
+ */
+@Override
+public String toString() {
+    StringBuilder s = new StringBuilder();
+    s.append(super.toString());
+    s.append("Nome do Presidente: ").append(nomePresidente).append("\n");
+    s.append("Universidade: ").append(universidade).append("\n");
+    s.append("Sede do Distrito: ").append(sedeDistrito).append("\n");
+    return s.toString();
+}
     
-    /**
-     * Cria uma copia da Cidade
-     */
-    public Object clone() {
-        return new Cidade(this.getnomeLocalidade(),this.getnomeDistrito(),this.getnumeroHabitantes(),this.getnomePresidente(),this.getuniversidade(),this.getsedeDistrito(),this.getlistaPOI());
-    }
+/**
+ * Create a copy of the City
+ */
+public Object clone() {
+    return new City(
+        this.getCityName(),
+        this.getDistrictName(),
+        this.getPopulation(),
+        this.getPresidentName(),
+        this.getUniversity(),
+        this.getDistrictHeadquarters(),
+        this.getPointsOfInterest()
+    );
+}
 }

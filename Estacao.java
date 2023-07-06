@@ -22,6 +22,11 @@ public class Estacao implements Serializable{
         this.kilometro=kilometro;
     }
     
+    /**
+     * Sets the nomeEstacao property.
+     *
+     * @param  nomeEstacao  the new value for nomeEstacao
+     */
     public void setnomeEstacao(String nomeEstacao)
     {
         this.nomeEstacao=nomeEstacao;
@@ -42,6 +47,11 @@ public class Estacao implements Serializable{
     }
     
     
+     /**
+      * Convert the object to a string representation.
+      *
+      * @return         	A string representation of the object.
+      */
      public String toString() {
         StringBuffer s = new StringBuffer();
         s.append("Nome: "+nomeEstacao+"\n");

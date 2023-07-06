@@ -68,68 +68,60 @@ private ListaLig edges;
     edges.remover(nome); 
     }
 
-    /**
-     * Calculo do grafo (Shortest path), implementando o algoritmo de Dijkstra, dando o caminho mais curto em KM
-     */
-    public ArrayList sp(String partida, String chegada) throws LigNaoExiste {
-        String x = partida;
-        ArrayList caminho = new ArrayList();
-        caminho.add(x);
-        ArrayList T = new ArrayList();
-        ArrayList orla = new ArrayList();
-        HashMap candidatos = new HashMap();
-        HashMap dist = new HashMap();
-        boolean stuck = false;
-        dist.put(partida,0);
-    
-        for(Iterator it=vertex.values().iterator();it.hasNext();) {
-            dist.put(((Localidade) it.next()).getnomeLocalidade(),Integer.MAX_VALUE);
-        }
-    
-        while(!(x.equals(chegada)) && !stuck) {
-            ArrayList adjacentes = new ArrayList();
-            adjacentes.addAll(edges.adjacentes(x));
-            for (int i = 0; i<orla.size();i++) {
-                String aux = (String) orla.get(i);
-                if(adjacentes.contains(aux)) { 
-                    if((((Integer) dist.get(x)) + (((Ligacoes) edges.procurarNome(edges.procuraLigDir(x,aux))).getnumeroKm()))< (Integer) dist.get(aux)) {
-                        Ligacoes aux1 = edges.procurarNome(edges.procuraLigDir(x,aux));
-                        candidatos.put(aux1.getDestino(),aux1.getNome());
-                        dist.put(aux, (((Integer) dist.get(x)) + (((Ligacoes) edges.procurarNome(edges.procuraLigDir(x,aux))).getnumeroKm())));
-                 
-                    }
-                
-                }
-            }
-        
-            for(int i = 0; i< adjacentes.size();i++) {
-                String aux = (String) adjacentes.get(i);
-                if(!(orla.contains(aux))) {
-                    if(!(caminho.contains(aux))) {
-                        Ligacoes aux1 = edges.procurarNome(edges.procuraLigDir(x,aux));
-                        orla.add(aux);
-                        candidatos.put(aux1.getDestino(),aux1.getNome());
-                        dist.put(aux,(((Integer) dist.get(x)) + (((Ligacoes) edges.procurarNome(edges.procuraLigDir(x,aux))).getnumeroKm())));
-                    }
-                }
-         
-            }
-            if(candidatos.isEmpty()) stuck = true;
-            else {
-                String aux2 = procuracand(candidatos,dist);
-                String aux =((Ligacoes) edges.procurarNome(aux2)).getDestino();
-                x=aux;
-                if(!(caminho.contains(x))) caminho.add(x);
-                if(!(T.contains(aux2))) T.add(aux2);
-                for( int i = 0; i<orla.size(); i++) {
-                    if(orla.get(i).equals(x)) orla.remove(x);
-                }
-            
-            candidatos.remove(aux);
-            }
-        }
-        return filtra(T);
+public ArrayList<String> sp(String partida, String chegada) throws LigNaoExiste {
+    ArrayList<String> caminho = new ArrayList<>();
+    caminho.add(partida);
+    ArrayList<String> T = new ArrayList<>();
+    ArrayList<String> orla = new ArrayList<>();
+    HashMap<String, String> candidatos = new HashMap<>();
+    HashMap<String, Integer> dist = new HashMap<>();
+    boolean stuck = false;
+    dist.put(partida, 0);
+
+    for (Localidade localidade : vertex.values()) {
+        dist.put(localidade.getnomeLocalidade(), Integer.MAX_VALUE);
     }
+
+    while (!partida.equals(chegada) && !stuck) {
+        List<String> adjacentes = new ArrayList<>(edges.adjacentes(partida));
+        for (String aux : orla) {
+            if (adjacentes.contains(aux)) {
+                Ligacoes aux1 = edges.procurarNome(edges.procuraLigDir(partida, aux));
+                int distancia = dist.get(partida) + aux1.getnumeroKm();
+                if (distancia < dist.get(aux)) {
+                    candidatos.put(aux1.getDestino(), aux1.getNome());
+                    dist.put(aux, distancia);
+                }
+            }
+        }
+
+        for (String aux : adjacentes) {
+            if (!orla.contains(aux) && !caminho.contains(aux)) {
+                Ligacoes aux1 = edges.procurarNome(edges.procuraLigDir(partida, aux));
+                orla.add(aux);
+                candidatos.put(aux1.getDestino(), aux1.getNome());
+                dist.put(aux, dist.get(partida) + aux1.getnumeroKm());
+            }
+        }
+
+        if (candidatos.isEmpty()) {
+            stuck = true;
+        } else {
+            String aux2 = procuracand(candidatos, dist);
+            String aux = edges.procurarNome(aux2).getDestino();
+            partida = aux;
+            if (!caminho.contains(partida)) {
+                caminho.add(partida);
+            }
+            if (!T.contains(aux2)) {
+                T.add(aux2);
+            }
+            orla.remove(partida);
+            candidatos.remove(aux);
+        }
+    }
+    return filtra(T);
+}
 
     private String procuracand (HashMap candidatos, HashMap dist) throws LigNaoExiste {
         String aux = "";
